@@ -117,15 +117,21 @@ const analyzeWord = (word: string, method: string) => {
 
 export default function TwiAnalyzer() {
   const [input, setInput] = useState("");
-  const [method, setMethod] = useState("lemma");
-  const [result, setResult] = useState<ReturnType<typeof analyzeWord> | null>(null);
+  const [results, setResults] = useState<{
+    lemma: ReturnType<typeof analyzeWord>;
+    stem: ReturnType<typeof analyzeWord>;
+  } | null>(null);
 
   const handleAnalyze = useCallback(() => {
     if (input.trim()) {
-      const res = analyzeWord(input.trim().toLowerCase(), method);
-      setResult(res);
+      const lemmaRes = analyzeWord(input.trim().toLowerCase(), "lemma");
+      const stemRes = analyzeWord(input.trim().toLowerCase(), "stem");
+      setResults({
+        lemma: lemmaRes,
+        stem: stemRes
+      });
     }
-  }, [input, method]);
+  }, [input]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -178,59 +184,69 @@ export default function TwiAnalyzer() {
               </Button>
             </div>
 
-            <div className="flex items-center gap-3">
-              <label htmlFor="method" className="text-sm font-medium text-muted-foreground">
-                Analysis Method:
-              </label>
-              <Select value={method} onValueChange={setMethod}>
-                <SelectTrigger className="w-48">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="lemma">Lemmatization</SelectItem>
-                  <SelectItem value="stem">Stemming</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="text-sm text-muted-foreground">
+              Both lemmatization and stemming results will be displayed automatically
             </div>
           </CardContent>
         </Card>
 
         {/* Results Section */}
-        {result && (
-          <Card className="shadow-[var(--shadow-soft)] border-0 animate-in slide-in-from-top-2 duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <BookOpen className="w-5 h-5" />
-                Analysis Results - {result.method}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <div className="p-3 bg-accent rounded-lg">
-                    <label className="text-sm font-medium text-accent-foreground">Original Word</label>
-                    <p className="text-lg font-semibold text-foreground">{result.original}</p>
-                  </div>
-                  
-                  <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
-                    <label className="text-sm font-medium text-primary">
-                      {result.method === 'Lemmatization' ? 'Lemma' : 'Stem'}
-                    </label>
-                    <p className="text-lg font-semibold text-foreground">{result.result}</p>
-                  </div>
+        {results && (
+          <div className="space-y-6">
+            {/* Original Word Display */}
+            <Card className="shadow-[var(--shadow-soft)] border-0 animate-in slide-in-from-top-2 duration-300">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <label className="text-sm font-medium text-muted-foreground">Original Word</label>
+                  <p className="text-2xl font-bold text-foreground">{results.lemma.original}</p>
                 </div>
+              </CardContent>
+            </Card>
 
-                <div className="space-y-3">
+            {/* Lemmatization Results */}
+            <Card className="shadow-[var(--shadow-soft)] border-0 animate-in slide-in-from-top-2 duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <BookOpen className="w-5 h-5" />
+                  Lemmatization Results
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
+                    <label className="text-sm font-medium text-primary">Lemma</label>
+                    <p className="text-lg font-semibold text-foreground">{results.lemma.result}</p>
+                  </div>
                   <div className="p-3 bg-learning/5 rounded-lg border border-learning/20">
                     <label className="text-sm font-medium text-learning">Rules Applied</label>
-                    <p className="text-sm text-foreground">
-                      {result.rule}
-                    </p>
+                    <p className="text-sm text-foreground">{results.lemma.rule}</p>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Stemming Results */}
+            <Card className="shadow-[var(--shadow-soft)] border-0 animate-in slide-in-from-top-2 duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <BookOpen className="w-5 h-5" />
+                  Stemming Results
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-3 bg-secondary/5 rounded-lg border border-secondary/20">
+                    <label className="text-sm font-medium text-secondary">Stem</label>
+                    <p className="text-lg font-semibold text-foreground">{results.stem.result}</p>
+                  </div>
+                  <div className="p-3 bg-learning/5 rounded-lg border border-learning/20">
+                    <label className="text-sm font-medium text-learning">Rules Applied</label>
+                    <p className="text-sm text-foreground">{results.stem.rule}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Info Section */}
