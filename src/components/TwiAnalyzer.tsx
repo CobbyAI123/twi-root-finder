@@ -50,7 +50,8 @@ export default function TwiAnalyzer() {
 
   const handleAnalyze = useCallback(() => {
     if (input.trim()) {
-      const res = analyzeWord(input.trim().toLowerCase(), category);
+      const categoryHint = category === "auto" ? "" : category;
+      const res = analyzeWord(input.trim().toLowerCase(), categoryHint);
       setResult(res);
     }
   }, [input, category]);
@@ -115,7 +116,7 @@ export default function TwiAnalyzer() {
                   <SelectValue placeholder="Auto-detect" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Auto-detect</SelectItem>
+                  <SelectItem value="auto">Auto-detect</SelectItem>
                   <SelectItem value="human">Human</SelectItem>
                   <SelectItem value="animate">Animate</SelectItem>
                   <SelectItem value="inanimate">Inanimate</SelectItem>
