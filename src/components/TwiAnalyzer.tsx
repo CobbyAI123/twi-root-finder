@@ -5,56 +5,127 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, BookOpen, Languages } from "lucide-react";
 
-const pluralRules = [
-  { prefix: "mm", singularPrefix: { animate: "a", human: "ɔ", default: "a" } },
-  { prefix: "nn", singularPrefix: { human: "o", default: "ɛ" } },
-  { prefix: "n", singularPrefix: { default: "ɛ" } },
+// Sample Twi words dataset
+const twiWords = [
+  'kɔ', 'kɔɔ', 'kɔeɛ', 'bɛkɔ', 'rekɔ', 'meyɛ', 'yɛɛ', 'medan', 'ɔmofie',
+  'bɛyɛ', 'ɔyɛ', 'di', 'didii', 'redidi', 'bedi', 'mebisaeɛ', 'rekyerɛ',
+  'kasa', 'ka', 'bɛka', 'rekasa', 'ɛkɔm', 'adidi', 'adwane', 'asikafoɔ',
+  'mmoa', 'abɔfra', 'rekai', 'resa', 'tueɛ', 'ɔfaeɛ', 'nnua', 'osikanii',
+  'sɔre3', 'nhunumuu', 'hwɛsofoc', 'anuanom', 'ɔdɔ', 'ɔbarima', 'mmrante3',
+  'ɛkwan', 'Afuo', 'nwura', 'kutaeɛ', 'b3su', 'nsɛmbisa', 'nkwerɛeɛ', 'repia',
+  'bɛba', 'nkasa', 'aba'
 ];
 
-function analyzeWord(word: string, categoryHint = "") {
-  const lower = word.toLowerCase();
+// Prefixes and suffixes
+const prefixes = ['re', 'bɛ', 'me', 'mɛ', 'ɔmo', 'be', 'ɛ', 'o', 'wo', 'n', 'be', 'a', 'mo', 'ɔ', 'sɛm'];
+const suffixes = ['foɔ', 'dii', 'di', 'nii', 'eɛ', 'so', 'nom', 'kuo', 'ɛ', 'ɔ', 'muu'];
 
-  for (const rule of pluralRules) {
-    if (lower.startsWith(rule.prefix)) {
-      const root = lower.slice(rule.prefix.length);
-      const singularPrefix =
-        rule.singularPrefix[categoryHint as keyof typeof rule.singularPrefix] || rule.singularPrefix.default;
-      const singular = singularPrefix + root;
+// Lemma dictionary
+const lemmaDict: Record<string, string> = {
+  'kɔ': 'kɔ',
+  'yɛ': 'yɛ',
+  'di': 'di',
+  'ka': 'ka',
+  'kasa': 'kasa',
+  'pɛ': 'pɛ',
+  'fwe': 'fwe'
+};
 
-      return {
-        word,
-        singular,
-        prefix: singularPrefix,
-        suffix: root,
-        lemma: root,
-        isPlural: true,
-      };
+// Lemmatization function
+const lemmatize = (word: string): [string, string] => {
+  const ruleApplied: string[] = [];
+  let processedWord = word;
+
+  // Prefix transformations
+  if (processedWord.startsWith('nn') && processedWord.length > 3) {
+    processedWord = 'd' + processedWord.slice(2);
+    ruleApplied.push('Prefix transformation: nn -> d');
+  }
+
+  if (processedWord.startsWith('mm') && processedWord.length > 3) {
+    processedWord = 'ab' + processedWord.slice(2);
+    ruleApplied.push('Prefix transformation: mm -> ab');
+  }
+
+  // Remove prefix
+  for (const pre of prefixes) {
+    if (processedWord.startsWith(pre) && processedWord.length > pre.length + 1) {
+      processedWord = processedWord.slice(pre.length);
+      ruleApplied.push(`Prefix removal: ${pre}`);
+      break;
     }
   }
 
-  // If it's already likely a singular word, return it as-is
-  return {
-    word,
-    singular: word,
-    prefix: "",
-    suffix: word,
-    lemma: word,
-    isPlural: false,
-  };
-}
+  // Remove suffix
+  for (const suf of suffixes) {
+    if (processedWord.endsWith(suf) && processedWord.length > suf.length + 1) {
+      processedWord = processedWord.slice(0, -suf.length);
+      ruleApplied.push(`Suffix removal: ${suf}`);
+      break;
+    }
+  }
+
+  return [processedWord, ruleApplied.length > 0 ? ruleApplied.join(', ') : 'None'];
+};
+
+// Stemming function
+const stem = (word: string): [string, string] => {
+  const ruleApplied: string[] = [];
+  let processedWord = word;
+
+  // Remove prefix
+  for (const pre of prefixes) {
+    if (processedWord.startsWith(pre) && processedWord.length > pre.length + 1) {
+      processedWord = processedWord.slice(pre.length);
+      ruleApplied.push(`Prefix removal: ${pre}`);
+      break;
+    }
+  }
+
+  // Remove suffix
+  for (const suf of suffixes) {
+    if (processedWord.endsWith(suf) && processedWord.length > suf.length + 1) {
+      processedWord = processedWord.slice(0, -suf.length);
+      ruleApplied.push(`Suffix removal: ${suf}`);
+      break;
+    }
+  }
+
+  return [processedWord, ruleApplied.length > 0 ? ruleApplied.join(', ') : 'None'];
+};
+
+// Main analysis function
+const analyzeWord = (word: string, method: string) => {
+  if (method === 'lemma') {
+    const [result, rule] = lemmatize(word);
+    return {
+      original: word,
+      result,
+      rule,
+      method: 'Lemmatization'
+    };
+  } else {
+    const [result, rule] = stem(word);
+    return {
+      original: word,
+      result,
+      rule,
+      method: 'Stemming'
+    };
+  }
+};
 
 export default function TwiAnalyzer() {
   const [input, setInput] = useState("");
-  const [category, setCategory] = useState("");
+  const [method, setMethod] = useState("lemma");
   const [result, setResult] = useState<ReturnType<typeof analyzeWord> | null>(null);
 
   const handleAnalyze = useCallback(() => {
     if (input.trim()) {
-      const categoryHint = category === "auto" ? "" : category;
-      const res = analyzeWord(input.trim().toLowerCase(), categoryHint);
+      const res = analyzeWord(input.trim().toLowerCase(), method);
       setResult(res);
     }
-  }, [input, category]);
+  }, [input, method]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -74,7 +145,7 @@ export default function TwiAnalyzer() {
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
-            Analyze Twi words to discover their singular forms, prefixes, and linguistic structure
+            Analyze Twi words using lemmatization or stemming to discover their root forms
           </p>
         </div>
 
@@ -90,7 +161,7 @@ export default function TwiAnalyzer() {
             <div className="flex gap-3">
               <div className="flex-1">
                 <Input
-                  placeholder="Enter Twi word (plural or singular)"
+                  placeholder="Enter a Twi word"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -108,18 +179,16 @@ export default function TwiAnalyzer() {
             </div>
 
             <div className="flex items-center gap-3">
-              <label htmlFor="category" className="text-sm font-medium text-muted-foreground">
-                Category (optional):
+              <label htmlFor="method" className="text-sm font-medium text-muted-foreground">
+                Analysis Method:
               </label>
-              <Select value={category} onValueChange={setCategory}>
+              <Select value={method} onValueChange={setMethod}>
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Auto-detect" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="auto">Auto-detect</SelectItem>
-                  <SelectItem value="human">Human</SelectItem>
-                  <SelectItem value="animate">Animate</SelectItem>
-                  <SelectItem value="inanimate">Inanimate</SelectItem>
+                  <SelectItem value="lemma">Lemmatization</SelectItem>
+                  <SelectItem value="stem">Stemming</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -132,7 +201,7 @@ export default function TwiAnalyzer() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <BookOpen className="w-5 h-5" />
-                Analysis Results
+                Analysis Results - {result.method}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -140,54 +209,26 @@ export default function TwiAnalyzer() {
                 <div className="space-y-3">
                   <div className="p-3 bg-accent rounded-lg">
                     <label className="text-sm font-medium text-accent-foreground">Original Word</label>
-                    <p className="text-lg font-semibold text-foreground">{result.word}</p>
+                    <p className="text-lg font-semibold text-foreground">{result.original}</p>
                   </div>
                   
                   <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
-                    <label className="text-sm font-medium text-primary">Singular Form</label>
-                    <p className="text-lg font-semibold text-foreground">{result.singular}</p>
-                  </div>
-                  
-                  <div className="p-3 bg-educational/5 rounded-lg border border-educational/20">
-                    <label className="text-sm font-medium text-educational">Lemma (Root)</label>
-                    <p className="text-lg font-semibold text-foreground">{result.lemma}</p>
+                    <label className="text-sm font-medium text-primary">
+                      {result.method === 'Lemmatization' ? 'Lemma' : 'Stem'}
+                    </label>
+                    <p className="text-lg font-semibold text-foreground">{result.result}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div className="p-3 bg-learning/5 rounded-lg border border-learning/20">
-                    <label className="text-sm font-medium text-learning">Prefix</label>
-                    <p className="text-lg font-semibold text-foreground">
-                      {result.prefix || <span className="text-muted-foreground italic">None</span>}
-                    </p>
-                  </div>
-                  
-                  <div className="p-3 bg-secondary rounded-lg">
-                    <label className="text-sm font-medium text-secondary-foreground">Suffix/Root</label>
-                    <p className="text-lg font-semibold text-foreground">{result.suffix}</p>
-                  </div>
-                  
-                  <div className="p-3 bg-muted rounded-lg">
-                    <label className="text-sm font-medium text-muted-foreground">Form Type</label>
-                    <p className="text-lg font-semibold text-foreground">
-                      {result.isPlural ? "Plural" : "Singular"}
+                    <label className="text-sm font-medium text-learning">Rules Applied</label>
+                    <p className="text-sm text-foreground">
+                      {result.rule}
                     </p>
                   </div>
                 </div>
               </div>
-
-              {result.isPlural && (
-                <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                  <p className="text-sm text-primary">
-                    <strong>Transformation:</strong> {result.word} → {result.singular}
-                    <br />
-                    <span className="text-muted-foreground">
-                      Removed plural prefix "{result.word.slice(0, result.word.length - result.suffix.length)}" 
-                      and added singular prefix "{result.prefix}"
-                    </span>
-                  </p>
-                </div>
-              )}
             </CardContent>
           </Card>
         )}
@@ -197,10 +238,10 @@ export default function TwiAnalyzer() {
           <CardContent className="pt-6">
             <div className="text-center space-y-2">
               <p className="text-sm text-muted-foreground">
-                This tool analyzes Twi words to identify their grammatical structure and singular forms.
+                This tool performs lemmatization and stemming on Twi words to find their root forms.
               </p>
               <p className="text-xs text-muted-foreground">
-                Supports common plural patterns: mm-, nn-, and n- prefixes
+                Lemmatization provides more linguistically accurate roots, while stemming uses simpler rule-based removal.
               </p>
             </div>
           </CardContent>
