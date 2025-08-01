@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, BookOpen, Languages, X } from "lucide-react";
 
 // Sample Twi words dataset
@@ -122,12 +121,12 @@ const lemmatize = (word: string): [string, string] => {
   return [processedWord, ruleApplied.length > 0 ? ruleApplied.join(', ') : 'None'];
 };
 
-// Main analysis function - now focused only on lemmatization
+// Main analysis function - focused only on lemmatization
 const analyzeWord = (word: string) => {
-  const [result, rule] = lemmatize(word);
+  const [lemmaResult, rule] = lemmatize(word);
   return {
     original: word,
-    result,
+    result: lemmaResult,
     rule,
     method: 'Lemmatization'
   };
