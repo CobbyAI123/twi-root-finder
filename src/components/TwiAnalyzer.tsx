@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, BookOpen, Languages, X } from "lucide-react";
+import { Search, BookOpen, Languages, X, List, ChevronRight } from "lucide-react";
 
 // Comprehensive Twi words dataset
 const twiWords = [
@@ -274,6 +274,10 @@ const analyzeWord = (word: string) => {
 export default function TwiAnalyzer() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<ReturnType<typeof analyzeWord> | null>(null);
+  const [showWordList, setShowWordList] = useState(false);
+
+  // Get all unique words from the dataset
+  const allWords = [...new Set([...twiWords, ...Object.keys(lemmaDict)])].sort();
 
   const handleAnalyze = useCallback(() => {
     if (input.trim()) {
@@ -295,7 +299,8 @@ export default function TwiAnalyzer() {
 
   return (
     <div className="min-h-screen bg-[var(--gradient-subtle)] py-12 px-4">
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="flex gap-6 max-w-7xl mx-auto">
+        <div className="flex-1 max-w-2xl space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -404,6 +409,54 @@ export default function TwiAnalyzer() {
             </div>
           </CardContent>
         </Card>
+        </div>
+
+        {/* Word List Panel */}
+        <div className={`transition-all duration-300 ${showWordList ? 'w-80' : 'w-12'}`}>
+          <Card className="h-fit sticky top-12 shadow-[var(--shadow-soft)] border-0">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className={`flex items-center gap-2 text-lg transition-opacity duration-200 ${showWordList ? 'opacity-100' : 'opacity-0'}`}>
+                  <List className="w-5 h-5" />
+                  {showWordList && "Twi Words"}
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowWordList(!showWordList)}
+                  className="p-2 hover:bg-accent"
+                  aria-label={showWordList ? "Hide word list" : "Show word list"}
+                >
+                  <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${showWordList ? 'rotate-180' : 'rotate-0'}`} />
+                </Button>
+              </div>
+              {showWordList && (
+                <div className="text-sm text-muted-foreground">
+                  {allWords.length} words available
+                </div>
+              )}
+            </CardHeader>
+            {showWordList && (
+              <CardContent className="pt-0">
+                <div className="max-h-96 overflow-y-auto space-y-1">
+                  {allWords.map((word, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setInput(word);
+                        const lemmaRes = analyzeWord(word);
+                        setResult(lemmaRes);
+                      }}
+                      className="w-full text-left px-2 py-1 text-sm rounded hover:bg-accent transition-colors duration-150 text-foreground"
+                    >
+                      {word}
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            )}
+          </Card>
+        </div>
       </div>
     </div>
   );
