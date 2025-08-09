@@ -208,7 +208,7 @@ const lemmaDict: Record<string, { lemma: string; prefix: string[]; suffix: strin
   "anka": {"lemma": "nka", "prefix": ["a"], "suffix": []},
   "abrɔ": {"lemma": "brɔ", "prefix": ["a"], "suffix": []},
   "aburo": {"lemma": "buro", "prefix": ["a"], "suffix": []},
-  "duku": {"lemma": "duku", "prefix": [], "suffix": []}
+  "duku": {"lemma": "duku", "prefix": [], "suffix": []},
 };
 
 // Enhanced Lemmatization function using dictionary and fallback rules
