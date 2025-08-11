@@ -215,62 +215,65 @@ export default function TwiAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--gradient-subtle)] py-12 px-4">
-      <div className="flex gap-6 max-w-7xl mx-auto">
-        <div className="flex-1 max-w-2xl space-y-8">
+    <div className="min-h-screen bg-[var(--gradient-subtle)] py-4 px-4 sm:py-8 md:py-12">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 max-w-7xl mx-auto">
+        {/* Main Content */}
+        <div className="flex-1 max-w-full lg:max-w-2xl space-y-4 sm:space-y-6 md:space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Languages className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
+        <div className="text-center space-y-2 sm:space-y-4">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
+            <Languages className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
               Twi Word Analyzer
             </h1>
           </div>
-          <p className="text-lg text-muted-foreground max-w-md mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-md mx-auto px-4">
             Analyze Twi words using advanced lemmatization to discover their root forms
           </p>
         </div>
 
         {/* Search Section */}
-        <Card className="shadow-[var(--shadow-soft)] border-0">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Search className="w-5 h-5" />
+        <Card className="shadow-[var(--shadow-soft)] border-0 mx-2 sm:mx-0">
+          <CardHeader className="pb-3 sm:pb-4">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
               Word Analysis
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-3">
+          <CardContent className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <div className="flex-1">
                 <Input
                   placeholder="Enter a Twi word"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="text-lg py-6 transition-[var(--transition-smooth)] focus:shadow-[var(--shadow-focus)]"
+                  className="text-base sm:text-lg py-3 sm:py-6 transition-[var(--transition-smooth)] focus:shadow-[var(--shadow-focus)]"
                   aria-label="Twi word input"
                 />
               </div>
-              <Button 
-                onClick={handleAnalyze} 
-                className="px-8 py-6 text-lg font-medium transition-[var(--transition-smooth)]"
-                disabled={!input.trim()}
-              >
-                Analyze
-              </Button>
-              {(input || result) && (
+              <div className="flex gap-2 sm:gap-3">
                 <Button 
-                  onClick={handleClear} 
-                  variant="outline"
-                  className="px-6 py-6 transition-[var(--transition-smooth)]"
-                  aria-label="Clear input and results"
+                  onClick={handleAnalyze} 
+                  className="flex-1 sm:flex-none px-4 sm:px-8 py-3 sm:py-6 text-base sm:text-lg font-medium transition-[var(--transition-smooth)]"
+                  disabled={!input.trim()}
                 >
-                  <X className="w-5 h-5" />
+                  Analyze
                 </Button>
-              )}
+                {(input || result) && (
+                  <Button 
+                    onClick={handleClear} 
+                    variant="outline"
+                    className="px-4 sm:px-6 py-3 sm:py-6 transition-[var(--transition-smooth)]"
+                    aria-label="Clear input and results"
+                  >
+                    <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </Button>
+                )}
+              </div>
             </div>
 
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs sm:text-sm text-muted-foreground">
               Advanced lemmatization results will be displayed automatically
             </div>
           </CardContent>
@@ -278,34 +281,34 @@ export default function TwiAnalyzer() {
 
         {/* Results Section */}
         {result && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6 mx-2 sm:mx-0">
             {/* Original Word Display */}
             <Card className="shadow-[var(--shadow-soft)] border-0 animate-in slide-in-from-top-2 duration-300">
-              <CardContent className="pt-6">
+              <CardContent className="pt-4 sm:pt-6">
                 <div className="text-center">
-                  <label className="text-sm font-medium text-muted-foreground">Original Word</label>
-                  <p className="text-2xl font-bold text-foreground">{result.original}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Original Word</label>
+                  <p className="text-xl sm:text-2xl font-bold text-foreground">{result.original}</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Lemmatization Results */}
             <Card className="shadow-[var(--shadow-soft)] border-0 animate-in slide-in-from-top-2 duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <BookOpen className="w-5 h-5" />
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
                   Lemmatization Results
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
-                    <label className="text-sm font-medium text-primary">Lemma</label>
-                    <p className="text-lg font-semibold text-foreground">{result.result}</p>
+                    <label className="text-xs sm:text-sm font-medium text-primary">Lemma</label>
+                    <p className="text-base sm:text-lg font-semibold text-foreground break-words">{result.result}</p>
                   </div>
                   <div className="p-3 bg-learning/5 rounded-lg border border-learning/20">
-                    <label className="text-sm font-medium text-learning">Rules Applied</label>
-                    <p className="text-sm text-foreground">{result.rule}</p>
+                    <label className="text-xs sm:text-sm font-medium text-learning">Rules Applied</label>
+                    <p className="text-xs sm:text-sm text-foreground break-words">{result.rule}</p>
                   </div>
                 </div>
               </CardContent>
@@ -314,10 +317,10 @@ export default function TwiAnalyzer() {
         )}
 
         {/* Info Section */}
-        <Card className="bg-accent/30 border-accent/40">
-          <CardContent className="pt-6">
+        <Card className="bg-accent/30 border-accent/40 mx-2 sm:mx-0">
+          <CardContent className="pt-4 sm:pt-6">
             <div className="text-center space-y-2">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 This tool performs advanced lemmatization on Twi words to find their accurate root forms.
               </p>
               <p className="text-xs text-muted-foreground">
@@ -328,51 +331,99 @@ export default function TwiAnalyzer() {
         </Card>
         </div>
 
-        {/* Word List Panel */}
-        <div className={`transition-all duration-300 ${showWordList ? 'w-80' : 'w-12'}`}>
-          <Card className="h-fit sticky top-12 shadow-[var(--shadow-soft)] border-0">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className={`flex items-center gap-2 text-lg transition-opacity duration-200 ${showWordList ? 'opacity-100' : 'opacity-0'}`}>
-                  <List className="w-5 h-5" />
-                  {showWordList && "Twi Words"}
-                </CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowWordList(!showWordList)}
-                  className="p-2 hover:bg-accent"
-                  aria-label={showWordList ? "Hide word list" : "Show word list"}
-                >
-                  <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${showWordList ? 'rotate-180' : 'rotate-0'}`} />
-                </Button>
-              </div>
+        {/* Word List Panel - Mobile First Design */}
+        <div className="w-full lg:w-auto">
+          {/* Mobile: Full-width collapsible section */}
+          <div className="lg:hidden">
+            <Card className="shadow-[var(--shadow-soft)] border-0 mx-2">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <List className="w-5 h-5" />
+                    Twi Words ({allWords.length})
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowWordList(!showWordList)}
+                    className="p-2 hover:bg-accent"
+                    aria-label={showWordList ? "Hide word list" : "Show word list"}
+                  >
+                    <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${showWordList ? 'rotate-90' : 'rotate-0'}`} />
+                  </Button>
+                </div>
+              </CardHeader>
               {showWordList && (
-                <div className="text-sm text-muted-foreground">
-                  {allWords.length} words available
-                </div>
+                <CardContent className="pt-0">
+                  <div className="max-h-64 overflow-y-auto">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
+                      {allWords.map((word, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setInput(word);
+                            const lemmaRes = analyzeWord(word);
+                            setResult(lemmaRes);
+                            setShowWordList(false); // Close on mobile after selection
+                          }}
+                          className="text-left px-2 py-1 text-sm rounded hover:bg-accent transition-colors duration-150 text-foreground break-words"
+                        >
+                          {word}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
               )}
-            </CardHeader>
-            {showWordList && (
-              <CardContent className="pt-0">
-                <div className="max-h-96 overflow-y-auto space-y-1">
-                  {allWords.map((word, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setInput(word);
-                        const lemmaRes = analyzeWord(word);
-                        setResult(lemmaRes);
-                      }}
-                      className="w-full text-left px-2 py-1 text-sm rounded hover:bg-accent transition-colors duration-150 text-foreground"
-                    >
-                      {word}
-                    </button>
-                  ))}
+            </Card>
+          </div>
+
+          {/* Desktop: Sidebar */}
+          <div className={`hidden lg:block transition-all duration-300 ${showWordList ? 'w-80' : 'w-12'}`}>
+            <Card className="h-fit sticky top-12 shadow-[var(--shadow-soft)] border-0">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className={`flex items-center gap-2 text-lg transition-opacity duration-200 ${showWordList ? 'opacity-100' : 'opacity-0'}`}>
+                    <List className="w-5 h-5" />
+                    {showWordList && "Twi Words"}
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowWordList(!showWordList)}
+                    className="p-2 hover:bg-accent"
+                    aria-label={showWordList ? "Hide word list" : "Show word list"}
+                  >
+                    <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${showWordList ? 'rotate-180' : 'rotate-0'}`} />
+                  </Button>
                 </div>
-              </CardContent>
-            )}
-          </Card>
+                {showWordList && (
+                  <div className="text-sm text-muted-foreground">
+                    {allWords.length} words available
+                  </div>
+                )}
+              </CardHeader>
+              {showWordList && (
+                <CardContent className="pt-0">
+                  <div className="max-h-96 overflow-y-auto space-y-1">
+                    {allWords.map((word, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setInput(word);
+                          const lemmaRes = analyzeWord(word);
+                          setResult(lemmaRes);
+                        }}
+                        className="w-full text-left px-2 py-1 text-sm rounded hover:bg-accent transition-colors duration-150 text-foreground"
+                      >
+                        {word}
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          </div>
         </div>
       </div>
     </div>
