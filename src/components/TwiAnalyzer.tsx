@@ -219,13 +219,23 @@ export default function TwiAnalyzer() {
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 max-w-7xl mx-auto">
         {/* Main Content */}
         <div className="flex-1 max-w-full lg:max-w-2xl space-y-4 sm:space-y-6 md:space-y-8">
+        {/* Project Caption */}
+        <div className="text-center space-y-1 mb-4 sm:mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
+            TWI LEMMATIZATION
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground font-medium">
+            By: Cobbinah-Gyapong Vincent
+          </p>
+        </div>
+
         {/* Header */}
         <div className="text-center space-y-2 sm:space-y-4">
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
             <Languages className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
               Twi Word Analyzer
-            </h1>
+            </h2>
           </div>
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-md mx-auto px-4">
             Analyze Twi words using advanced lemmatization to discover their root forms
