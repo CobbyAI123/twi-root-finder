@@ -224,9 +224,6 @@ export default function TwiAnalyzer() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
             TWI LEMMATIZATION
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground font-medium">
-            By: Cobbinah-Gyapong Vincent
-          </p>
         </div>
 
         {/* Header */}
